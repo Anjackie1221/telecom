@@ -1,4 +1,4 @@
-State,Account length,Area code,International plan,Voice mail plan,Number vmail messages,Total day minutes,Total day calls,Total day charge,Total eve minutes,Total eve calls,Total eve charge,Total night minutes,Total night calls,Total night charge,Total intl minutes,Total intl calls,Total intl charge,Customer service calls,Churn
+state,account_length,area_code,international_plan,voice_mail_plan,number_vmail_messages,total_day_minutes,total_day_calls,total_day_charge,total_eve_minutes,total_eve_calls,total_eve_charge,total_night_minutes,total_night_calls,total_night_charge,total_intl_minutes,total_intl_calls,total_intl_charge,customer_service_calls,churn
 KS,127,415,No,No,0,221.0,100,37.57,160.7,113,13.66,233.1,96,10.49,6.8,4,1.84,2,False
 ME,108,510,No,No,0,246.2,102,41.85,202.4,134,17.2,180.1,95,8.1,9.4,5,2.54,1,False
 WV,125,415,No,No,0,206.0,128,35.02,198.1,71,16.84,135.9,116,6.12,13.2,3,3.56,0,False

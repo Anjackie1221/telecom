@@ -30,15 +30,15 @@ class DataTransformation:
         this function is responsible for data preprocessing and transformation
         '''
         try:
-            numerical_columns = ['Number vmail messages',
-                                    'Total day minutes', 'Total day calls', 'Total day charge',
-                                    'Total eve minutes', 'Total eve calls', 'Total eve charge',
-                                    'Total night minutes', 'Total night calls', 'Total night charge',
-                                    'Total intl minutes', 'Total intl calls', 'Total intl charge',
-                                    'Customer service calls']
-            categorical_columns = ['International plan','Voice mail plan']
+            numerical_columns = ['number_vmail_messages',
+                                    'total_day_minutes', 'total_day_calls', 'total_day_charge',
+                                    'total_eve_minutes', 'total_eve_calls', 'total_eve_charge',
+                                    'total_night_minutes', 'total_night_calls', 'total_night_charge',
+                                    'total_intl_minutes', 'total_intl_calls', 'total_intl_charge',
+                                    'customer_service_calls']
+            categorical_columns = ['international_plan','voice_mail_plan']
 
-            state_columns = ['State']
+            state_columns = ['state']
 
             num_pipe = Pipeline(
                 steps=[
@@ -87,9 +87,9 @@ class DataTransformation:
 
             preprocessing_obj = self.get_data_transformer_object()
 
-            target_column_name = 'Churn'
+            target_column_name = 'churn'
 
-            feature_cols = ['Churn','Area code','Account length']
+            feature_cols = ['churn','area_code','account_length']
 
             input_feature_train_df = train_df.drop(columns=feature_cols,axis=1)
             target_feature_train_df = train_df[target_column_name]
@@ -111,7 +111,9 @@ class DataTransformation:
 
             input_feature_train_arr, target_feature_train_arr = final_pipeline.fit_resample(input_feature_train_df, target_feature_train_df)
             input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
+
             train_arr = np.c_[input_feature_train_arr, target_feature_train_arr]
+            # test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
             test_arr = np.c_[input_feature_test_arr, target_feature_test_df.values]
 
             logging.info('Saved preprocessing object')

@@ -33,6 +33,10 @@ class DataIngestion:
             # save the dataset to the raw data
             df.to_csv(self.ingestion_config.raw_data_path,index=False,header=True)
 
+            # change column names
+            column_mapping = {col: col.lower().replace(' ', '_') for col in df.columns}
+            df = df.rename(columns=column_mapping)
+
             logging.info('Train test split initiated')
             # train test split, then save the dataset separately
             train_set,test_set = train_test_split(df,test_size=0.33,random_state=42)
@@ -53,6 +57,7 @@ if __name__ == "__main__":
     train_data,test_data = obj.initiate_data_ingestion()
 
     data_transformation = DataTransformation()
+    data_transformation.initiate_data_transformation(train_data,test_data)
     train_arr,test_arr,_ = data_transformation.initiate_data_transformation(train_data,test_data)
 
     modelTrainer = ModelTrainer()

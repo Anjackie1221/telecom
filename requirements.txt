@@ -8,4 +8,5 @@ xgboost
 category_encoders
 imblearn
 dill
+Flask
 -e .

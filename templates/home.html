@@ -1,0 +1,102 @@
+<html>
+<body>
+    <div class="login">
+       <h1>Telecom Churn</h1>
+   
+       <form action="{{ url_for('predict_datapoint')}}" method="post">
+        <h1>
+            <legend>Telecom Churn Prediction</legend>
+        </h1>
+        <div class="mb-3">
+            <label class="form-label">State</label>
+            <input class="form-control" type="text" name="state" placeholder="Enter your State" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Account Length</label>
+            <input class="form-control" type="number" name="account_length" placeholder="Enter your Account Length" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Area Code</label>
+            <input class="form-control" type="number" name="area_code" placeholder="Enter your Area Code" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">International Plan</label>
+            <select class="form-control" name="international_plan" required>
+                <option class="placeholder" selected disabled value="">Select International Plan</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Voice Mail Plan</label>
+            <select class="form-control" name="voice_mail_plan" required>
+                <option class="placeholder" selected disabled value="">Select Voice Mail Plan</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Number of Vmail Messages</label>
+            <input class="form-control" type="number" name="number_vmail_messages" placeholder="Enter Number of Vmail Messages" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Day Minutes</label>
+            <input class="form-control" type="number" name="total_day_minutes" placeholder="Enter Total Day Minutes" step="0.01" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Day Calls</label>
+            <input class="form-control" type="number" name="total_day_calls" placeholder="Enter Total Day Calls" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Day Charge</label>
+            <input class="form-control" type="number" name="total_day_charge" placeholder="Enter Total Day Charge" step="0.01" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Evening Minutes</label>
+            <input class="form-control" type="number" name="total_eve_minutes" placeholder="Enter Total Evening Minutes" step="0.01" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Evening Calls</label>
+            <input class="form-control" type="number" name="total_eve_calls" placeholder="Enter Total Evening Calls" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Evening Charge</label>
+            <input class="form-control" type="number" name="total_eve_charge" placeholder="Enter Total Evening Charge" step="0.01" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Night Minutes</label>
+            <input class="form-control" type="number" name="total_night_minutes" placeholder="Enter Total Night Minutes" step="0.01" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Night Calls</label>
+            <input class="form-control" type="number" name="total_night_calls" placeholder="Enter Total Night Calls" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Night Charge</label>
+            <input class="form-control" type="number" name="total_night_charge" placeholder="Enter Total Night Charge" step="0.01" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total International Minutes</label>
+            <input class="form-control" type="number" name="total_intl_minutes" placeholder="Enter Total International Minutes" step="0.01" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total International Calls</label>
+            <input class="form-control" type="number" name="total_intl_calls" placeholder="Enter Total International Calls" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total International Charge</label>
+            <input class="form-control" type="number" name="total_intl_charge" placeholder="Enter Total International Charge" step="0.01" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Customer Service Calls</label>
+            <input class="form-control" type="number" name="customer_service_calls" placeholder="Enter Customer Service Calls" required>
+        </div>
+        <div class="mb-3">
+            <input class="btn btn-primary" type="submit" value="Predict Churn or Not" />
+        </div>
+    </form>
+    <h2>
+       THE  prediction is {{results}}
+    </h2>
+   <body>
+</html>
