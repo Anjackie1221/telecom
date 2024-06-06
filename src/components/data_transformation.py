@@ -5,10 +5,8 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder,StandardScaler, MinMaxScaler, RobustScaler,OrdinalEncoder
-from category_encoders import CountEncoder,OneHotEncoder,TargetEncoder
+from sklearn.preprocessing import OneHotEncoder,StandardScaler,RobustScaler,OrdinalEncoder
+from category_encoders import OneHotEncoder
 
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
@@ -17,9 +15,11 @@ from src.exception import CustomException
 from src.logger import logging
 from src.utils import save_object
 
+
 @dataclass
 class DataTransformationConfig:
     preprocessor_obj_file_path = os.path.join('artifacts','preprocessor.pkl')
+    preprocessor_obj_file_path_full_pipeline = os.path.join('artifacts','full_pipeline.pkl')
 
 class DataTransformation:
     def __init__(self):
@@ -40,43 +40,42 @@ class DataTransformation:
 
             state_columns = ['State']
 
-            num_pipeline = Pipeline(
-                steps = [
+            num_pipe = Pipeline(
+                steps=[
                     ('scaler',RobustScaler())
-                    ]
+                ]
             )
             logging.info('Numerical columns scaling completed')
 
-            cat_pipeline = Pipeline(
-                steps = [
-                    ('one_hot_encoder',OneHotEncoder()),
-                    ('scaler',StandardScaler())
-                    ]
+            cat_pipe = Pipeline(
+                steps=[
+                    ('one_hot',OneHotEncoder()),
+                    ('scaler',RobustScaler())
+                ]
             )
 
             logging.info('Categorical columns encodering completed')
 
-            state_pipeline = Pipeline(
+            state_pipe = Pipeline(
                 steps=[
-                    ('ordinal_encoder',OrdinalEncoder()),
-                    ('scaler',StandardScaler())
+                    ('ordinal',OrdinalEncoder()),
+                    ('scaler',RobustScaler())
                 ]
             )
 
             logging.info('State column encodering completed')
 
             preprocessor = ColumnTransformer(
-                [('num_pipeline',num_pipeline,numerical_columns),
-                ('cat_pipeline',cat_pipeline,categorical_columns),
-                ('state_pipeline',state_pipeline,state_columns)]
+                transformers=[
+                    ('num_pipeline',num_pipe,numerical_columns),
+                    ('cat_pipeline',cat_pipe,categorical_columns),
+                    ('state_pipeline',state_pipe,state_columns)],remainder='drop'
             )
 
             return preprocessor
 
         except Exception as e:
             raise CustomException(e,sys)
-        
-
         
     def initiate_data_transformation(self,train_path,test_path):
         try:
@@ -90,16 +89,6 @@ class DataTransformation:
 
             target_column_name = 'Churn'
 
-            numerical_columns = ['Number vmail messages',
-                                    'Total day minutes', 'Total day calls', 'Total day charge',
-                                    'Total eve minutes', 'Total eve calls', 'Total eve charge',
-                                    'Total night minutes', 'Total night calls', 'Total night charge',
-                                    'Total intl minutes', 'Total intl calls', 'Total intl charge',
-                                    'Customer service calls']
-            categorical_columns = ['International plan','Voice mail plan']
-
-            state_columns = ['State']
-
             feature_cols = ['Churn','Area code','Account length']
 
             input_feature_train_df = train_df.drop(columns=feature_cols,axis=1)
@@ -110,19 +99,33 @@ class DataTransformation:
 
             logging.info('Applying preprocessing object on training and testing dataframes')
 
-            input_feature_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
-            input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
+            final_pipeline = Pipeline(steps=[
+                ('preprocessor', preprocessing_obj),
+                ('smote', SMOTE())
+            ])
 
-            train_arr = np.c_[input_feature_train_arr,np.array(target_feature_train_df)]
-            test_arr = np.c_[input_feature_test_arr,np.array(target_feature_test_df)]
+            # input_feature_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
+            # input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
+            # train_arr = np.c_[input_feature_train_arr,np.array(target_feature_train_df)]
+            # test_arr = np.c_[input_feature_test_arr,np.array(target_feature_test_df)]
+
+            input_feature_train_arr, target_feature_train_arr = final_pipeline.fit_resample(input_feature_train_df, target_feature_train_df)
+            input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
+            train_arr = np.c_[input_feature_train_arr, target_feature_train_arr]
+            test_arr = np.c_[input_feature_test_arr, target_feature_test_df.values]
 
             logging.info('Saved preprocessing object')
 
             save_object(
                 file_path = self.data_transformation_config.preprocessor_obj_file_path,
-                obj = preprocessing_obj
+                obj = preprocessing_obj # save columnstransformater
             )
-        
+
+            save_object(
+                file_path = self.data_transformation_config.preprocessor_obj_file_path_full_pipeline,
+                obj = final_pipeline # save combined full pipeline with SMOT
+            )
+
             return(
                 train_arr,
                 test_arr,
