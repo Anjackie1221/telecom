@@ -3,7 +3,7 @@ import pandas as pd
 
 from src.pipeline.predict_pipeline import CustomData,PredictPipeline
 
-st.write("##This is the Telecom Churn Prediction")
+st.write("## This is the Telecom Churn Prediction")
 
 st.sidebar.header("User Input")
 
